@@ -17,16 +17,16 @@ LOOM = (537, 201, 1065, 456)  # loom slots, pattern list and preview; inventory 
 def label_strip(panels, labels, scale=1.0, gap=16, pad=16, font_size=22):
     font = ImageFont.truetype(FONT, font_size)
     panels = [p.resize((round(p.width * scale), round(p.height * scale)), Image.NEAREST) for p in panels]
-    w = sum(p.width for p in panels) + gap * (len(panels) - 1) + pad * 2
+    widths = [max(p.width, round(font.getlength(t))) for p, t in zip(panels, labels)]  # a label never clips
+    w = sum(widths) + gap * (len(panels) - 1) + pad * 2
     h = max(p.height for p in panels) + pad * 2 + font_size + 18
     out = Image.new("RGB", (w, h), BG)
     d = ImageDraw.Draw(out)
     x = pad
-    for p, text in zip(panels, labels):
-        out.paste(p, (x, pad))
-        tw = d.textlength(text, font=font)
-        d.text((x + (p.width - tw) / 2, pad + p.height + 10), text, font=font, fill=FG)
-        x += p.width + gap
+    for p, text, cw in zip(panels, labels, widths):
+        out.paste(p, (x + (cw - p.width) // 2, pad))
+        d.text((x + (cw - d.textlength(text, font=font)) / 2, pad + p.height + 10), text, font=font, fill=FG)
+        x += cw + gap
     return out
 
 
@@ -44,6 +44,12 @@ def main(shots: pathlib.Path, out: pathlib.Path):
     tooltip = open_("inv_tooltip").crop((535, 590, 1075, 775))
     label_strip([anvil, tooltip], ["…or rename any banner in an anvil", "the finished flag's patterns"],
                 scale=0.8, font_size=19).save(out / "crafting-anvil.png", optimize=True)
+
+    craft = open_("shield_craft").crop((815, 215, 1460, 425))
+    raised = open_("shield_hero").crop((560, 330, 880, 650))
+    raised = raised.resize((round(raised.width * craft.height / raised.height), craft.height), Image.LANCZOS)
+    label_strip([craft, raised], ["banner + shield in any crafting grid", "the shield counts as the flag"],
+                scale=0.8, font_size=19).save(out / "crafting-shield.png", optimize=True)
 
     deaths = [open_(n).crop((330, 160, 1270, 600)) for n in ("death_zh", "death_rock")]
     label_strip(deaths, ["China flag + English", "a cobblestone named “Rock” + big words"],

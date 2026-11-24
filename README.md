@@ -39,7 +39,7 @@ Requirements: Minecraft 1.20.1, Forge 47.x, Simple Voice Chat 2.4+ (tested with 
 
 ## Crafting guide
 
-You're held to a language while its flag is **anywhere in your inventory**. Carry two flags and either language is fine.
+You're held to a language while its flag (a banner, or a shield carrying one) is **anywhere in your inventory**. Carry two flags and either language is fine.
 
 ### The 中国 flag: three steps in a vanilla loom
 
@@ -65,6 +65,14 @@ language's flag.
 `中文`, `中国`, `普通话`, `Chinese`, `Mandarin`, `日本語`, `Japanese`, `한국어`, `Español`, `Français`, `Deutsch`,
 `Te Reo Māori`… Case and accents don't matter. The full list is in
 [`languages.json`](mod/src/main/resources/langenforcer/languages.json).
+
+### On a shield
+
+Put a flag banner and a shield together in any crafting grid: the shield takes the design and counts as the flag.
+To use a name instead, rename the **shield** after decorating it. The banner's own name doesn't carry over, and a
+plain renamed shield isn't a flag.
+
+![A shield and the 中国 flag in the crafting grid, and the finished shield raised](docs/img/crafting-shield.png)
 
 ### Other loom flags
 

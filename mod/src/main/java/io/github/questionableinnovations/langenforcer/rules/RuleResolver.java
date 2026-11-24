@@ -12,7 +12,7 @@ public final class RuleResolver {
      * One inventory stack, reduced to what matters.
      *
      * @param customName anvil name, or null
-     * @param bannerBase dye name of a banner's base colour, or null if not a banner
+     * @param bannerBase dye name of the banner's base colour (banner or banner-decorated shield), or null if neither
      * @param layers     the banner's pattern layers (empty for non-banners)
      */
     public record Carried(String customName, String bannerBase, List<FlagDesign.Layer> layers) {

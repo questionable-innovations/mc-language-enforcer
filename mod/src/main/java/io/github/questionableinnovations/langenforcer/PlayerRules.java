@@ -14,6 +14,7 @@ import net.minecraft.world.item.BannerItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ShieldItem;
 import net.minecraft.world.level.block.entity.BannerPattern;
 
 import java.util.ArrayList;
@@ -74,6 +75,9 @@ public final class PlayerRules {
             String name = stack.hasCustomHoverName() ? stack.getHoverName().getString() : null;
             if (stack.getItem() instanceof BannerItem banner) {
                 out.add(new RuleResolver.Carried(name, banner.getColor().getName(), layers(stack)));
+            } else if (stack.getItem() instanceof ShieldItem && BlockItem.getBlockEntityData(stack) != null) {
+                // A banner applied to a shield keeps its design; the shield's own anvil name is what counts
+                out.add(new RuleResolver.Carried(name, ShieldItem.getColor(stack).getName(), layers(stack)));
             } else if (name != null) {
                 out.add(new RuleResolver.Carried(name, null, List.of()));
             }
