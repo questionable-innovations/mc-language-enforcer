@@ -1,0 +1,14 @@
+model,device,compute,lid_ms,dual_decode_ms
+whisper-tiny,cuda,float32,8.8,40.1
+whisper-tiny,cuda,int8,6.6,46.9
+whisper-tiny,cpu,int8,207.4,405.0
+whisper-base,cuda,float32,16.3,68.9
+whisper-base,cuda,int8,10.0,73.5
+whisper-base,cpu,int8,305.1,719.6
+whisper-small,cuda,float32,50.1,168.9
+whisper-small,cuda,int8,26.1,138.9
+whisper-small,cpu,int8,1027.1,2338.9
+whisper-medium,cuda,float32,137.6,440.8
+whisper-medium,cuda,int8,61.4,264.2
+whisper-turbo,cuda,float32,216.6,483.1
+whisper-turbo,cuda,int8,93.7,222.0

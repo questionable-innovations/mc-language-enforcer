@@ -1,0 +1,17 @@
+# Python
+.venv/
+__pycache__/
+.pytest_cache/
+
+# Gradle / Forge
+mod/.gradle/
+mod/build/
+mod/run/
+mod/logs/
+mod/out/
+*.iml
+.idea/
+
+# Research data (downloaded corpora, synthetic audio, models) lives outside the repo
+research/data/
+research/g2pW/
