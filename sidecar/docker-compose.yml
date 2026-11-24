@@ -1,0 +1,17 @@
+# docker compose up -d   (GPU: needs the NVIDIA Container Toolkit; delete the deploy block for CPU)
+services:
+  langenforcer:
+    image: ghcr.io/questionable-innovations/mc-language-enforcer-sidecar:latest
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:7860:7860"
+    environment:
+      LE_MODEL: auto
+      # LE_TOKEN: change-me   # then set sidecar.token in config/langenforcer-common.toml
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]

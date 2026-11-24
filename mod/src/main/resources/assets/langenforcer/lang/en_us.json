@@ -1,0 +1,8 @@
+{
+  "death.attack.langenforcer.spoken_word": "%s spoke out of turn",
+  "death.attack.langenforcer.basic": "%s spoke out of turn",
+  "death.attack.langenforcer.language": "%s forgot to speak %s",
+  "death.attack.langenforcer.rock": "%s used too many big words",
+  "death.attack.langenforcer.gadsby": "%s said a word with an E in it",
+  "death.attack.langenforcer.mime": "%s broke the vow of silence"
+}

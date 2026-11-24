@@ -1,0 +1,29 @@
+[project]
+name = "langenforcer-sidecar"
+version = "1.0.0"
+description = "Speech judge for the Minecraft Language Enforcer mod (faster-whisper)"
+requires-python = ">=3.11,<3.14"
+license = "MIT"
+dependencies = [
+  # 4.9.1 ships sm_61 kernels (GTX 10xx); verified with cuobjdump
+  "ctranslate2==4.9.1",
+  "faster-whisper==1.2.1",
+  "fastapi>=0.115",
+  "uvicorn>=0.30",
+  "numpy",
+  "wordfreq>=3.1",
+]
+
+[project.optional-dependencies]
+# Pinned for Pascal: cuDNN 9.10.2.21 still has sm_61 in libcudnn_cnn; later 9.x releases do not
+gpu = ["nvidia-cublas-cu12==12.9.1.4", "nvidia-cudnn-cu12==9.10.2.21"]
+
+[project.scripts]
+langenforcer-sidecar = "langenforcer_sidecar.__main__:main"
+
+[dependency-groups]
+dev = ["pytest>=8", "httpx>=0.27"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

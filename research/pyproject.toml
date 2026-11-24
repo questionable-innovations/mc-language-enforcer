@@ -1,0 +1,24 @@
+[project]
+name = "lid-research"
+version = "0.1.0"
+requires-python = ">=3.11,<3.13"
+dependencies = [
+  "faster-whisper>=1.1",
+  "numpy",
+  "soundfile",
+  "pypinyin",
+  "piper-tts[zh]",
+  "speechbrain>=1.0",
+  "torch",
+  "torchaudio",
+  "praat-parselmouth>=0.4.7",
+  "pyarrow>=26.0.1",
+  "unicode-rbnf>=2.5.1",
+  "nvidia-cublas-cu12>=12.9.3.13",
+  "nvidia-cudnn-cu12>=9,<10",
+  "wordfreq>=3.1.1",
+  "pillow>=13.0.0",
+  "transformers>=5.24.0",
+  "sentencepiece>=0.2.3",
+  "sacremoses>=0.2.0",
+]
