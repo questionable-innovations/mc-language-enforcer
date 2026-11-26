@@ -15,3 +15,6 @@ mod/out/
 # Research data (downloaded corpora, synthetic audio, models) lives outside the repo
 research/data/
 research/g2pW/
+mod/*/build/
+mod/*/run/
+mod/*/.gradle/

@@ -1,88 +1,67 @@
 plugins {
-    id 'eclipse'
-    id 'idea'
-    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+    id 'net.neoforged.moddev' version "${moddev_version}" apply false
+    id 'net.neoforged.moddev.legacyforge' version "${moddev_version}" apply false
 }
 
-version = mod_version
-group = mod_group_id
+allprojects {
+    version = mod_version
+    group = mod_group_id
 
-base {
-    archivesName = "${mod_id}-forge-${minecraft_version}"
-}
-
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
-
-minecraft {
-    mappings channel: mapping_channel, version: mapping_version
-    copyIdeResources = true
-
-    runs {
-        configureEach {
-            workingDirectory project.file('run')
-            property 'forge.logging.console.level', 'debug'
-            mods {
-                "${mod_id}" {
-                    source sourceSets.main
-                }
-            }
+    repositories {
+        maven {
+            name = 'henkelmax'
+            url = 'https://maven.maxhenkel.de/repository/public'
+            content { includeGroup 'de.maxhenkel.voicechat' }
         }
-        server {
-            property 'forge.enabledGameTestNamespaces', mod_id
-            args '--nogui'
+        mavenCentral()
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        options.encoding = 'UTF-8'
+    }
+}
+
+// Lists the build targets as JSON, for the CI matrix
+tasks.register('targets') {
+    def names = subprojects.findAll { it.name != 'common' }.collect { it.name }
+    doLast { println groovy.json.JsonOutput.toJson(names) }
+}
+
+configure(subprojects.findAll { it.name != 'common' }) { p ->
+    p.apply plugin: 'java'
+    def common = project(':common')
+
+    p.base.archivesName = "${mod_id}-${p.loader}-${p.minecraft_version}"
+    p.java.toolchain.languageVersion = JavaLanguageVersion.of(p.java_version as int)
+    p.sourceSets.main.java.srcDir common.file('src/main/java')
+    p.sourceSets.main.resources.srcDir common.file('src/main/resources')
+
+    p.dependencies {
+        compileOnly "de.maxhenkel.voicechat:voicechat-api:${voicechat_api_version}"
+    }
+
+    p.tasks.named('processResources', ProcessResources).configure {
+        def props = [
+                minecraft_version   : p.minecraft_version, minecraft_version_range: p.minecraft_version_range,
+                loader_api_range    : p.loader_api_range, loader_version_range: p.loader_version_range,
+                voicechat_range     : p.voicechat_range,
+                mod_id              : mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version,
+                mod_authors         : mod_authors, mod_description: mod_description,
+        ]
+        inputs.properties props
+        filesMatching(['META-INF/mods.toml', 'META-INF/neoforge.mods.toml', 'pack.mcmeta']) {
+            expand props
         }
     }
-}
 
-repositories {
-    maven {
-        name = 'henkelmax'
-        url = 'https://maven.maxhenkel.de/repository/public'
-        content { includeGroup 'de.maxhenkel.voicechat' }
-    }
-}
-
-dependencies {
-    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-    // Provided at runtime by Simple Voice Chat itself
-    compileOnly "de.maxhenkel.voicechat:voicechat-api:${voicechat_api_version}"
-
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-}
-
-test {
-    useJUnitPlatform()
-}
-
-tasks.named('processResources', ProcessResources).configure {
-    var replaceProperties = [
-            minecraft_version   : minecraft_version, minecraft_version_range: minecraft_version_range,
-            forge_version       : forge_version, forge_version_range: forge_version_range,
-            loader_version_range: loader_version_range,
-            mod_id              : mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version,
-            mod_authors         : mod_authors, mod_description: mod_description,
-    ]
-    inputs.properties replaceProperties
-    filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
-        expand replaceProperties + [project: project]
-    }
-}
-
-tasks.named('jar', Jar).configure {
-    manifest {
-        attributes([
-                'Specification-Title'     : mod_id,
-                'Specification-Vendor'    : mod_authors,
-                'Specification-Version'   : '1',
-                'Implementation-Title'    : project.name,
-                'Implementation-Version'  : project.jar.archiveVersion,
-                'Implementation-Vendor'   : mod_authors,
+    p.tasks.named('jar', Jar).configure {
+        manifest.attributes([
+                'Specification-Title'   : mod_id,
+                'Specification-Vendor'  : mod_authors,
+                'Specification-Version' : '1',
+                'Implementation-Title'  : p.base.archivesName.get(),
+                'Implementation-Version': mod_version,
+                'Implementation-Vendor' : mod_authors,
         ])
     }
-    finalizedBy 'reobfJar'
-}
-
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
 }

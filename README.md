@@ -29,13 +29,16 @@ docker run -d --name langenforcer --restart unless-stopped --gpus all \
 
 Or use [`sidecar/docker-compose.yml`](sidecar/docker-compose.yml).
 
-**2. Install the mod** on the server: drop `langenforcer-forge-1.20.1-<version>.jar` from the
+**2. Install the mod** on the server: drop the jar for your loader and Minecraft version from the
 [latest release](https://github.com/questionable-innovations/mc-language-enforcer/releases/latest) into `mods/`
 next to Simple Voice Chat, then restart.
 
-**3. Check it** with `/langenforcer health` (ops). Then craft a flag.
+| Jar | Minecraft | Loader | Simple Voice Chat |
+|---|---|---|---|
+| `langenforcer-forge-1.20.1-<version>.jar` | 1.20.1 | Forge 47.x | 2.4+ (tested with 2.6.27) |
+| `langenforcer-neoforge-1.21.1-<version>.jar` | 1.21.1 | NeoForge 21.1.x | 2.5+ (tested with 2.6.22) |
 
-Requirements: Minecraft 1.20.1, Forge 47.x, Simple Voice Chat 2.4+ (tested with 2.6.22).
+**3. Check it** with `/langenforcer health` (ops). Then craft a flag.
 
 ## Crafting guide
 
@@ -64,7 +67,7 @@ language's flag.
 
 `中文`, `中国`, `普通话`, `Chinese`, `Mandarin`, `日本語`, `Japanese`, `한국어`, `Español`, `Français`, `Deutsch`,
 `Te Reo Māori`… Case and accents don't matter. The full list is in
-[`languages.json`](mod/src/main/resources/langenforcer/languages.json).
+[`languages.json`](mod/common/src/main/resources/langenforcer/languages.json).
 
 ### On a shield
 
@@ -168,9 +171,16 @@ the hardest case: it's caught roughly 3 times in 4.
 ## Building
 
 ```bash
-cd mod && ./gradlew build                          # jar in mod/build/libs (JDK 17 is fetched automatically)
+cd mod && ./gradlew build                          # one jar per target in mod/<target>/build/libs (JDKs are fetched automatically)
+cd mod && ./gradlew :neoforge-1.21.1:build         # just one target
 cd sidecar && uv run pytest && docker build -t langenforcer-sidecar .
 ```
+
+`mod/common` holds everything that doesn't touch Minecraft (rules, the judge client, voice handling) and its tests.
+Each `mod/<loader>-<minecraft version>` directory is a build target holding only the glue for that version: config,
+events, reading banners from an inventory, and damage. To support another version, copy the nearest target
+directory, change its `gradle.properties`, and fix what no longer compiles. CI and releases pick it up
+automatically.
 
 ## Licence
 

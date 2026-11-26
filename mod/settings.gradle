@@ -1,15 +1,18 @@
 pluginManagement {
     repositories {
         gradlePluginPortal()
-        maven {
-            name = 'MinecraftForge'
-            url = 'https://maven.minecraftforge.net/'
-        }
+        maven { url = 'https://maven.neoforged.net/releases' }
     }
 }
 
 plugins {
-    id 'org.gradle.toolchains.foojay-resolver-convention' version '0.7.0'
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '0.9.0'
 }
 
 rootProject.name = 'langenforcer'
+
+include 'common'
+// Every <loader>-<minecraft version> directory is a build target; CI builds and releases each one
+file('.').listFiles().findAll { it.isDirectory() && it.name ==~ /(forge|neoforge|fabric)-[0-9.]+/ }
+        .sort { it.name }
+        .each { include it.name }

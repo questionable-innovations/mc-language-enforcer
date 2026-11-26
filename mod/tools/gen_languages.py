@@ -1,4 +1,4 @@
-"""Generate mod/src/main/resources/langenforcer/languages.json: every Whisper language and the names
+"""Generate mod/common/src/main/resources/langenforcer/languages.json: every Whisper language and the names
 an anvil-renamed banner can use to select it.
 
   uvx --with langcodes --with language_data --with faster-whisper==1.2.1 python mod/tools/gen_languages.py
@@ -49,7 +49,7 @@ def main() -> None:
                 seen.add(n.casefold())
                 uniq.append(n)
         out.append({"code": code, "name": english, "native": native, "names": uniq})
-    path = pathlib.Path(__file__).resolve().parents[1] / "src/main/resources/langenforcer/languages.json"
+    path = pathlib.Path(__file__).resolve().parents[1] / "common/src/main/resources/langenforcer/languages.json"
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(out, ensure_ascii=False, indent=1) + "\n")
     print(f"{len(out)} languages -> {path}")

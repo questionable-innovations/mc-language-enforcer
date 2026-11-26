@@ -1,0 +1,16 @@
+plugins {
+    id 'net.neoforged.moddev'
+}
+
+neoForge {
+    version = loader_api_version
+    runs {
+        server {
+            server()
+            programArgument '--nogui'
+        }
+    }
+    mods {
+        "${mod_id}" { sourceSet sourceSets.main }
+    }
+}
